@@ -8,13 +8,13 @@ Previsão de conclusão: 18/03/2024
 ## Objetivo
 Criar um projeto contendo um CRUD completo de Produtos utilizando os pilares da web e aplicando o conteúdo estudado durante a disciplina. Uma API foi disponibilizada pelo professor para o desenvolvimento do projeto.
 
-## Ferramentas utilizadas
+## Tecnologias utilizadas
 #### Linguagens:
 - HTML
 - CSS
 - JavaScript
 
-#### Biblioteca utilizada:
+#### Biblioteca:
 - Bootstrap
 
 ## Vídeo de apresentação
