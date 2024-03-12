@@ -3,6 +3,7 @@ Atividade avaliativa para a disciplina Front-End Developer - Criando Aplicaçõe
 
 
 > Status: Em desenvolvimento!
+
 Previsão de conclusão: 18/03/2024
 
 ## Objetivo
