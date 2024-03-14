@@ -1,9 +1,9 @@
 const URL = "http://localhost:3400/produtos"
 
-let listaProdutos = [];
+let listaProduto = [];
 let btnAdicionar = document.querySelector("#btn-adicionar");
-let tabelaProdutos = document.querySelector("table>tbody");
-let modalProdutos = new bootstrap.Modal(document.getElementById("modal-produto"));
+let tabelaProduto = document.querySelector("table>tbody");
+let modalProduto = new bootstrap.Modal(document.getElementById("modal-produto"));
 
 let formModal = {
     id: document.querySelector("#id"),
@@ -18,11 +18,11 @@ let formModal = {
 
 btnAdicionar.addEventListener("click", () => {
     limparModalProduto(),
-    modalProdutos.show()
+    modalProduto.show()
 });
 
 // Obtendo produtos da API
-function obterProdutos() {
+function obterProduto() {
     fetch(URL, {
         method: "GET",
         headers: {
@@ -30,21 +30,21 @@ function obterProdutos() {
         }
     })
     .then(response => response.json())
-    .then(produtos => {
-        listaProdutos = produtos;
-        popularTabela(produtos);
+    .then(produto => {
+        listaProduto = produto;
+        popularTabela(produto);
     })
     .catch((erro) => {});
 }
 
-obterProdutos();
+obterProduto();
 
-function popularTabela(produtos) {
+function popularTabela(produto) {
+
     // Limpando a tabela para popular
-    tabelaProdutos.textContent = "";
+    tabelaProduto.textContent = "";
 
-    produtos.forEach(produto => {
-
+    produto.forEach(produto => {
         criarLinhaNaTabela(produto)
     });
 }
@@ -87,13 +87,13 @@ function criarLinhaNaTabela(produto) {
     tr.appendChild(tdAcoes);
 
     // Adicionando a linha na tabela
-    tabelaProdutos.appendChild(tr);
+    tabelaProduto.appendChild(tr);
 }
 
 formModal.btnSalvar.addEventListener("click", () => {
 
-    // Capturando os dados da tela do modal e transformar em um cliente
-    let produto = obterProdutoDoModal()
+    // Capturando os dados da tela do modal e transformar em um produto
+    let produto = obterProdutoDoModal();
 
     // Verificando se os campos obrigatórios foram preenchidos
     if (!produto.validar()){
@@ -124,7 +124,7 @@ function adicionarProdutoNoBackend(produto) {
     fetch(URL, {
         method: "POST",
         headers: {
-            "Authorization" : obterToken(),
+            Authorization: obterToken(),
             "Content-Type": "application/json"
         },
         body: JSON.stringify(produto)
@@ -132,19 +132,20 @@ function adicionarProdutoNoBackend(produto) {
     .then(response => response.json())
     .then(response => {
         let novoProduto = new Produto(response);
-        listaProdutos.push(novoProduto);
+        listaProduto.push(novoProduto);
 
-        popularTabela(listaProdutos);
+        popularTabela(listaProduto);
 
         // Fechar modal
-        modalProdutos.hide();
+        modalProduto.hide();
 
         // Exibir mensagem de produto cadastrado com sucesso
-        alert(`Produto ${produto.nome} cadastrado com sucesso!`);
+        alert(`Produto ${produto.nome} cadastrado com sucesso!`)
     })
 }
 
 function limparModalProduto() {
+
     formModal.id.value = "";
     formModal.nome.value = "";
     formModal.valor.value = "";
@@ -153,17 +154,49 @@ function limparModalProduto() {
     formModal.dataCadastro.value = "";
 }
 
-function editarProduto(id) {
-    let produto = listaProdutos.find(produto => produto.id == id);
-    if (confirm("Deseja realmente editar o produto " + produto.nome)) {
-        editarProdutoNoBackend(id);
+function excluirProduto(id) {
+
+    let produto = listaProduto.find(produto => produto.id == id);
+
+    if (confirm("Deseja realmente excluir o produto " + produto.nome)) {
+        excluirProdutoNoBackend(id);
     }
 }
 
-function excluirProduto(id) {
-    let produto = listaProdutos.find(produto => produto.id == id);
-    if (confirm("Deseja realmente excluir o produto " + produto.nome)) {
-        excluirProdutoNoBackend(id);
+function excluirProdutoNoBackend(id) {
+
+    fetch(`${URL}/${id}`, {
+        method: "DELETE",
+        headers: {
+            Authorization: obterToken()
+        }
+    })
+   .then(() => {
+        removerProdutoDaLista(id);
+        popularTabela(listaProduto);
+   })
+}
+
+function removerProdutoDaLista(id) {
+
+    let indice = listaProduto.findIndex(produto => produto.id == id);
+
+    listaProduto.splice(indice, 1);
+}
+
+function logout() {
+    // Saindo do sistema removendo token, usuário e retornando para a tela de login
+    localStorage.removeItem("token");
+    localStorage.removeItem("usuario");
+    window.open("login.html", "_self");
+}
+
+function editarProduto(id) {
+
+    let produto = listaProduto.find(produto => produto.id == id);
+    
+    if (confirm("Deseja realmente editar o produto " + produto.nome)) {
+        editarProdutoNoBackend(id);
     }
 }
 
@@ -176,40 +209,14 @@ function editarProdutoNoBackend(id) {
     })
     .then(() => {
         editarProdutoProdutoDaLista(id);
-        popularTabela(listaProdutos);
+        popularTabela(listaProduto);
     })
-}
-
-function excluirProdutoNoBackend(id) {
-    fetch(`${URL}/${id}`, {
-        method: "DELETE",
-        headers: {
-            "Authorization" : obterToken()
-        }
-    })
-   .then(() => {
-        removerProdutoDaLista(id);
-        popularTabela(listaProdutos);
-   })
 }
 
 function editarProdutoProdutoDaLista(id) {
-    let indice = listaProdutos.findIndex(produto => produto.id == id);
-    listaProdutos[indice] = obterProdutoDoModal();
-    popularTabela(listaProdutos);
+    let indice = listaProduto.findIndex(produto => produto.id == id);
+    listaProduto[indice] = obterProdutoDoModal();
+    popularTabela(listaProduto);
     alert("Produto editado com sucesso!");
-    modalProdutos.hide();
-}
-
-function removerProdutoDaLista(id) {
-    let indice = listaProdutos.findIndex(produto => produto.id == id);
-
-    listaProdutos.splice(indice, 1);
-}
-
-function logout() {
-    // Saindo do sistema removendo token, usuário e retornando para a tela de login
-    localStorage.removeItem("token");
-    localStorage.removeItem("usuario");
-    window.open("login.html", "_self");
+    modalProduto.hide();
 }
