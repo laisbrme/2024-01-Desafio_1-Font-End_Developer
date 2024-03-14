@@ -1,9 +1,9 @@
 const EMAIL = "admin@admin.com";
-const SENHA = '123456';
+const SENHA = "123456";
 
 let campoEmail = document.querySelector("#email");
-let campoSenha = document.querySelector('#senha');
-let btnEntrar = document.getElementById(`btn-entrar`);
+let campoSenha = document.querySelector("#senha");
+let btnEntrar = document.getElementById("btn-entrar");
 
 btnEntrar.addEventListener("click", () => {
     // Capturando os valores digitados pelo usuário
@@ -17,16 +17,16 @@ btnEntrar.addEventListener("click", () => {
 function autenticar (email, senha){
 
     //1° Preciso saber qual a URL da API
-    const URL = 'http://localhost:3400/login';
+    const URL = "http://localhost:3400/login";
 
     //2° Criar um request para a api
     fetch(URL, {
-        method : 'POST',
-        headers: {'Content-Type': 'application/json'},
+        method : "POST",
+        headers: {"Content-Type": "application/json"},
         body: JSON.stringify({email, senha})
     })
     
-    //3° Se der certo, direcionar para a tela de home
+    //3° Se der certo, direcionar para a tela de controle de produtos
     .then(response => response = response.json())
     .then(response => {
         console.log(response)
@@ -44,7 +44,7 @@ function autenticar (email, senha){
         salvarUsuario(response.usuario);
 
         setTimeout(() => {
-            window.open('home.html', '_self');
+            window.open("controle-produtos.html", "_self");
         }, 1500);
         
     })
@@ -61,6 +61,6 @@ function mostrarLoading(){
     divLoading.style.display = "block";
 
     // pegar o emento caixa de login e esconder ela.
-    const divBoxLogin = document.querySelector('div.caixa-login');
+    const divBoxLogin = document.querySelector("div.caixa-login");
     divBoxLogin.style.display = "none";
 }
