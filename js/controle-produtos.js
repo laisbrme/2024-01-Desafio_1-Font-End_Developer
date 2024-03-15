@@ -6,6 +6,7 @@ let tabelaProduto = document.querySelector("table>tbody");
 let modalProduto = new bootstrap.Modal(document.getElementById("modal-produto"));
 
 let formModal = {
+
     id: document.querySelector("#id"),
     nome: document.querySelector("#nome"),
     valor: document.querySelector("#valor"),
@@ -17,16 +18,18 @@ let formModal = {
 }
 
 btnAdicionar.addEventListener("click", () => {
+
     limparModalProduto(),
     modalProduto.show()
 });
 
 // Obtendo produtos da API
 function obterProduto() {
+
     fetch(URL, {
         method: "GET",
         headers: {
-            "Authorization" : obterToken()
+            Authorization: obterToken()
         }
     })
     .then(response => response.json())
@@ -40,7 +43,6 @@ function obterProduto() {
 obterProduto();
 
 function popularTabela(produto) {
-
     // Limpando a tabela para popular
     tabelaProduto.textContent = "";
 
@@ -50,7 +52,6 @@ function popularTabela(produto) {
 }
 
 function criarLinhaNaTabela(produto) {
-
     // Criando uma linha na tabela
     let tr = document.createElement('tr');
 
@@ -70,10 +71,10 @@ function criarLinhaNaTabela(produto) {
     tdQtdEstoque.textContent = produto.qtdEstoque;
     tdObservacao.textContent = produto.observacao;
     tdDataCadastro.textContent = new Date(produto.dataCadastro).toLocaleDateString();
-    tdAcoes.innerHTML =    `<button onclick="editarProduto ${produto.id}" class="btn btn-outline-success btn-sm mr-3">
+    tdAcoes.innerHTML =     `<button onclick="editarProduto(${produto.id})" class="btn btn-outline-success btn-sm mr-3">
                                 Editar
                             </button>
-                            <button onclick="excluirProduto ${produto.id}" class="btn btn-outline-success btn-sm mr-3">
+                            <button onclick="excluirProduto(${produto.id})" class="btn btn-outline-success btn-sm mr-3">
                                 Excluir
                             </button>`;
 
@@ -91,7 +92,6 @@ function criarLinhaNaTabela(produto) {
 }
 
 formModal.btnSalvar.addEventListener("click", () => {
-
     // Capturando os dados da tela do modal e transformar em um produto
     let produto = obterProdutoDoModal();
 
@@ -114,7 +114,7 @@ function obterProdutoDoModal() {
         qtdEstoque: formModal.qtdEstoque.value,
         observacao: formModal.observacao.value,
         dataCadastro: (formModal.dataCadastro.value) // Condição
-            ? new Date(formModal.dataCadastro.value).toISOString() // Se verdadero
+            ? new Date(formModal.dataCadastro.value).toISOString() // Se verdadeiro
             : new Date().toDateString() // Se falso
     });
 }
@@ -191,6 +191,8 @@ function logout() {
     window.open("login.html", "_self");
 }
 
+
+/*
 function editarProduto(id) {
 
     let produto = listaProduto.find(produto => produto.id == id);
@@ -201,10 +203,11 @@ function editarProduto(id) {
 }
 
 function editarProdutoNoBackend(id) {
+
     fetch(`${URL}/${id}`, {
         method: "PUT",
         headers: {
-            "Authorization" : obterToken()
+            Authorization: obterToken()
         },
     })
     .then(() => {
@@ -214,9 +217,12 @@ function editarProdutoNoBackend(id) {
 }
 
 function editarProdutoProdutoDaLista(id) {
+
     let indice = listaProduto.findIndex(produto => produto.id == id);
     listaProduto[indice] = obterProdutoDoModal();
     popularTabela(listaProduto);
     alert("Produto editado com sucesso!");
     modalProduto.hide();
 }
+
+*/
