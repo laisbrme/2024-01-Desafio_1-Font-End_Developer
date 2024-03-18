@@ -12,5 +12,6 @@ Criar um projeto contendo um CRUD completo de Produtos utilizando os pilares da 
 <img src="https://img.icons8.com/color/2x/html-5.png" width="50" alt="HTML5" title="HTML5">  <img src="https://img.icons8.com/color/2x/css3.png" width="50" alt="CSS3" title="CSS3">  <img src="https://static.vecteezy.com/system/resources/previews/027/127/560/non_2x/javascript-logo-javascript-icon-transparent-free-png.png" width="50" alt="JavaScript" title="JavaScript">  <img src="https://img.icons8.com/color/2x/bootstrap.png" width="50" alt="Bootstrap" title="Bootstrap"> 
 
 ## Vídeo de apresentação
-...
+
+[![Watch the video](https://img.youtube.com/vi/KLd8p6iHlRo/hqdefault.jpg)](https://www.youtube.com/embed/KLd8p6iHlRo)
 
