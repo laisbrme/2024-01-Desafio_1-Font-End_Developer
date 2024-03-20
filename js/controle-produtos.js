@@ -5,7 +5,11 @@ let btnAdicionar = document.querySelector("#btn-adicionar");
 let tabelaProduto = document.querySelector("table>tbody");
 let modalProduto = new bootstrap.Modal(document.getElementById("modal-produto"));
 
+let modoEdição = false;
+
 let formModal = {
+
+    titulo: document.querySelector("h4.modal-title"),
 
     id: document.querySelector("#id"),
     nome: document.querySelector("#nome"),
@@ -19,6 +23,9 @@ let formModal = {
 
 btnAdicionar.addEventListener("click", () => {
 
+    modoEdição = false;
+    formModal.titulo.textContent = "Adicionar produto";
+
     limparModalProduto(),
     modalProduto.show()
 });
@@ -29,7 +36,7 @@ function obterProduto() {
     fetch(URL, {
         method: "GET",
         headers: {
-            Authorization: obterToken()
+            'Authorization': obterToken()
         }
     })
     .then(response => response.json())
@@ -101,9 +108,49 @@ formModal.btnSalvar.addEventListener("click", () => {
         return;
     }
 
-    // Adicionando na API - Backend
-    adicionarProdutoNoBackend(produto);
+    // Mandar na API - Backend
+    if (modoEdição) {
+        // Aqui atualiza
+        atualizarProdutoNoBackend(produto);
+    }else{
+        // Aqui cadastra
+        adicionarProdutoNoBackend(produto);
+    }
 });
+
+function atualizarProdutoNoBackend(id) {
+
+    fetch(`${URL}/${produto.id}`, {
+        method: "PUT",
+        headers: {
+            Authorization: obterToken(),
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(produto)
+    })
+    .then(() => {
+        // Atualizar produto na lista
+        atualizarProdutoNaTabela(produto);
+        // Informar a atualização ao usuário
+        // alert("Cliente atualizado com sucesso!");
+        Swal.fire({
+            //position: "top-end",
+            icon: "success",
+            title: `Produto ${produto.nome} cadastrado com sucesso!`,
+            showConfirmButton: false,
+            timer: 5000
+        })
+        // Fechar modal
+        modalProduto.hide();
+    })
+}
+
+function atualizarProdutoNaTabela(produto) {
+
+    let indice = listaProduto.findIndex(p => p.id == produto.id);
+    listaProduto.splice(indice, 1, produto);
+    popularTabela(listaProduto);
+}
 
 function obterProdutoDoModal() {
 
@@ -140,7 +187,14 @@ function adicionarProdutoNoBackend(produto) {
         modalProduto.hide();
 
         // Exibir mensagem de produto cadastrado com sucesso
-        alert(`Produto ${produto.nome} cadastrado com sucesso!`)
+        //alert(`Produto ${produto.nome} cadastrado com sucesso!`)
+        Swal.fire({
+            // position: "top-end",
+            icon: "success",
+            title: `Produto ${produto.nome} cadastrado com sucesso!`,
+            showConfirmButton: false,
+            timer: 5000
+        })
     })
 }
 
@@ -152,6 +206,28 @@ function limparModalProduto() {
     formModal.qtdEstoque.value = "";
     formModal.observacao.value = "";
     formModal.dataCadastro.value = "";
+}
+
+function editarProduto(id) {
+
+    modoEdição = true;
+    formModal.titulo.textContent = "Editar produto";
+
+    // Encontra dentro do array o produto pelo seu id
+    let produto = listaProduto.find(p => p.id == id);
+    
+    atualizaModalProduto(produto);
+
+    modalProduto.show();
+}
+
+function atualizaModalProduto(produto) {
+    formModal.id.value = produto.id;
+    formModal.nome.value = produto.nome;
+    formModal.valor.value = produto.valor;
+    formModal.qtdEstoque.value = produto.qtdEstoque;
+    formModal.observacao.value = produto.observacao;
+    formModal.dataCadastro.value = produto.dataCadastro.substring(0,10); // pega somente a data
 }
 
 function excluirProduto(id) {
@@ -190,39 +266,3 @@ function logout() {
     localStorage.removeItem("usuario");
     window.open("login.html", "_self");
 }
-
-
-/*
-function editarProduto(id) {
-
-    let produto = listaProduto.find(produto => produto.id == id);
-    
-    if (confirm("Deseja realmente editar o produto " + produto.nome)) {
-        editarProdutoNoBackend(id);
-    }
-}
-
-function editarProdutoNoBackend(id) {
-
-    fetch(`${URL}/${id}`, {
-        method: "PUT",
-        headers: {
-            Authorization: obterToken()
-        },
-    })
-    .then(() => {
-        editarProdutoProdutoDaLista(id);
-        popularTabela(listaProduto);
-    })
-}
-
-function editarProdutoProdutoDaLista(id) {
-
-    let indice = listaProduto.findIndex(produto => produto.id == id);
-    listaProduto[indice] = obterProdutoDoModal();
-    popularTabela(listaProduto);
-    alert("Produto editado com sucesso!");
-    modalProduto.hide();
-}
-
-*/
